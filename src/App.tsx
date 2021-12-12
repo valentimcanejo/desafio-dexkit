@@ -1,14 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
+import Wallet from './pages/Wallet';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          DESAFIO DEXKIT
-        </p>
+        
+      <Wallet></Wallet>
         
       </header>
     </div>
