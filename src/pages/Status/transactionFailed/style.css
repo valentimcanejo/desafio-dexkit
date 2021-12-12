@@ -1,0 +1,64 @@
+body{
+    background-color: rgba(242,242,242,255);
+    
+}
+
+.tryAgain{
+    margin-top: 10px;
+    text-align: center;
+
+}
+
+.tryAgain-button{
+  
+    color: rgba(250,205,143,255);
+    border-color: rgba(250,205,143,255);
+   
+    width: 100%;
+
+}
+
+.sending {
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.textField{
+
+    background: rgba(242,242,242,255);
+    
+
+}
+
+.circle-grid{
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+.button-paste{
+    color: black;
+}
+
+.login-form {
+  justify-content: center;
+  min-height: 90vh;
+}
+.button-block {
+  width: 100%;
+  color: "black";
+  background-color: rgba(244,203,98,255);
+  font-weight: bold;
+}
+.typography{
+
+    text-align: center;
+    padding-bottom: 15px;
+
+}
+.login-background {
+  justify-content: center;
+  min-height: 30vh;
+  padding: 40px;
+}
