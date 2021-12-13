@@ -1,26 +1,34 @@
-import React, { useState } from "react";
-import {
-  
-  Button,
- 
-  
-  Paper,
-  
-  Typography,
-} from "@mui/material";
+import React, { Props, useEffect, useState } from "react";
+import { Button, Paper, Typography } from "@mui/material";
 import "./styles.css";
-import {
-  
-  TextField
-} from "@mui/material";
+import { TextField } from "@mui/material";
 import { Grid } from "@mui/material";
+import { ethers } from "ethers";
 
-
-
-export default function Wallet() {
+export default function Wallet({ accounts }: any) {
   const [paste, setPaste] = useState("");
-
+  const [acc, setAcc] = useState(accounts);
   const [max, setMax] = useState<any | null>(null);
+
+  const [amount, setAmount] = useState();
+  const [userBalance, setUserBalance] = useState("");
+  //const balance = ethers.getBalance("address");
+
+  //window.ethereum.request({method: 'eth_getBalance'})
+  //console.log(window.ethereum.request({method: 'eth_getBalance'}))
+
+  //const balance = await provider.getBalance(address);
+
+  const getAccountBalance = (account: any) => {
+    window.ethereum
+      .request({ method: "eth_getBalance", params: [account, "latest"] })
+      .then((balance: ethers.BigNumberish) => {
+        setUserBalance(ethers.utils.formatEther(balance));
+      });
+  };
+
+  getAccountBalance(acc.toString());
+  console.log(userBalance);
 
   async function getPaste() {
     const text = await navigator.clipboard.readText();
@@ -30,15 +38,14 @@ export default function Wallet() {
 
   const onChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValueAmount = e.target.value;
-   
-      setMax(newValueAmount);
-    
+
+    setMax(newValueAmount);
   };
 
-  const onChangeToken = (e: React.ChangeEvent<HTMLInputElement>) =>{
-      const newValueToken = e.target.value;
-      setPaste(newValueToken)
-  }
+  const onChangeToken = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValueToken = e.target.value;
+    setPaste(newValueToken);
+  };
 
   function getMax() {
     setMax(99999);
@@ -60,10 +67,10 @@ export default function Wallet() {
                   variant="caption"
                   display="block"
                 >
-                  0x0000000000000
+                  {window.ethereum.selectedAddress}
                 </Typography>
                 <Typography className="typography" component="h1" variant="h5">
-                  1.5 ETH
+                  {userBalance} ETH
                 </Typography>
               </Grid>
               <Grid item>
@@ -104,7 +111,7 @@ export default function Wallet() {
                         Address
                       </Typography>
                       <TextField
-                      onChange={onChangeToken}
+                        onChange={onChangeToken}
                         value={paste}
                         className="textField"
                         placeholder="Address"
