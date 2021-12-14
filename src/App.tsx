@@ -15,33 +15,30 @@ declare global {
   }
 }
 
-
-
-
-
 function App() {
-  
-  const [ accounts, setAccounts ] = useState()
-  
+  const [accounts, setAccounts] = useState();
 
-   if(window.ethereum){
-     window.ethereum
-       .request({ method: "eth_requestAccounts" })
-       .then((result: any[]) => {
-         setAccounts(result[0]);
-       });
-   } else {
+  if (window.ethereum) {
+    window.ethereum
+      .request({ method: "eth_requestAccounts" })
+      .then((result: any[]) => {
+        setAccounts(result[0]);
+      });
+  } else {
     alert("Install MetaMask");
-    
-   }
-    
- console.log(accounts)
+  }
+
+  console.log(accounts);
 
   return (
     <>
       {/* {connected ? <Wallet></Wallet> : <ConnectWallet />} */}
 
-      {accounts === undefined ? <ConnectWallet /> : <Wallet accounts={accounts} />}
+      {accounts === undefined ? (
+        <ConnectWallet />
+      ) : (
+        <Wallet accounts={accounts} />
+      )}
 
       {/* <ConnectWallet/> */}
 

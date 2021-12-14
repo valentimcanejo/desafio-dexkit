@@ -38,11 +38,11 @@ export default function ConnectWallet() {
       <Grid container spacing={0} direction="row">
         <Grid item>
         
-          <Grid container direction="column" spacing={2} className="login-form">
+          <Grid container direction="column" spacing={2} className="wallet-form">
             <Paper
               variant="elevation"
               elevation={2}
-              className="login-background"
+              className="wallet-background"
             >
                 <Grid className="circle-grid" item>
               <CardMedia style={{height: 100, padding: '45%'} } image={ETH}></CardMedia>

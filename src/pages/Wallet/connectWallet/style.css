@@ -48,7 +48,7 @@ body{
     color: black;
 }
 
-.login-form {
+.wallet-form {
   justify-content: center;
   min-height: 90vh;
 }
@@ -64,7 +64,7 @@ body{
     padding-bottom: 15px;
 
 }
-.login-background {
+.wallet-background {
   justify-content: center;
   min-height: 30vh;
   padding: 40px;
