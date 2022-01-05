@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@material-ui/styles";
-import "./styles.css";
 import { TextField } from "@mui/material";
 import { Grid } from "@mui/material";
 import { ethers } from "ethers";
