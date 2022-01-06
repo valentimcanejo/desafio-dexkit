@@ -31,6 +31,10 @@ interface Props {
   accounts: any;
 }
 
+interface Account {
+  add: string;
+}
+
 interface DialogTitleProps {
   id: string;
   children?: React.ReactNode;
@@ -102,9 +106,10 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
   const [info, setInfo] = useState([]);
   const [userBalance, setUserBalance] = useState("");
   const [amount, setAmount] = useState();
-  const [history, setHistory] = useState("");
+
   const [addresses, setAddresses] = useState<string | null>(null);
   const [open, setOpen] = React.useState(false);
+
   const startTransaction = async ({
     setPending,
     setError,
@@ -139,27 +144,33 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
 
   useEffect(() => {
     getAccountBalance(accounts.toString());
-    setAddresses(localStorage.getItem("addresses"));
+    setAddresses(localStorage.getItem("addresses") || "{}");
   });
 
-  const getAccountBalance = (account: any) => {
+  const getAccountBalance = useCallback((account: any) => {
     window.ethereum
       .request({ method: "eth_getBalance", params: [account, "latest"] })
       .then((balance: ethers.BigNumberish) => {
         setUserBalance(ethers.utils.formatEther(balance));
       });
-  };
+  }, []);
 
-  const onChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValueAmount = e.target.value;
+  const onChangeAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValueAmount = e.target.value;
 
-    setMax(newValueAmount);
-  };
+      setMax(newValueAmount);
+    },
+    []
+  );
 
-  const onChangeToken = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValueToken = e.target.value;
-    setPaste(newValueToken);
-  };
+  const onChangeToken = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValueToken = e.target.value;
+      setPaste(newValueToken);
+    },
+    []
+  );
 
   const getPaste = useCallback(async () => {
     const text = await navigator.clipboard.readText();
@@ -167,15 +178,15 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
     setPaste(text);
   }, []);
 
-  const getMax = () => {
+  const getMax = useCallback(() => {
     setMax(userBalance);
-  };
+  }, [userBalance]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const data = new FormData(e.target);
     console.log(e.target);
-
+    setAddresses(JSON.parse(localStorage.getItem("addresse") || "{}"));
     await startTransaction({
       setPending,
       setError,
@@ -185,12 +196,12 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
     });
   };
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-  };
-  const handleClose = () => {
+  }, [open]);
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [open]);
 
   return (
     <Box>
