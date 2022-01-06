@@ -87,6 +87,9 @@ const useStyles = makeStyles(() => ({
     fontWeight: "bold",
     color: "black",
     backgroundColor: "rgba(244,203,98,255)",
+    "&:hover": {
+      backgroundColor: "rgba(244,203,98,255)",
+    },
   },
   grid: {
     minHeight: "90vh",
@@ -283,6 +286,7 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
                               size="small"
                               variant="contained"
                               onClick={handleClickOpen}
+                              className={classes.button}
                             >
                               Last Address
                             </Button>
@@ -335,7 +339,6 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
                         <Button
                           fullWidth
                           variant="contained"
-                          color="primary"
                           type="submit"
                           className={classes.button}
                         >

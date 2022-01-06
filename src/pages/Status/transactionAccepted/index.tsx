@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import "./style.css";
+
 import Check from "../../../assets/check.png";
 import { makeStyles } from "@material-ui/styles";
 
@@ -34,6 +34,9 @@ const useStyles = makeStyles(() => ({
     marginTop: "10px",
     color: "black",
     backgroundColor: "rgba(244,203,98,255)",
+    "&:hover": {
+      backgroundColor: "rgba(244,203,98,255)",
+    },
   },
   grid: {
     minHeight: "90vh",
