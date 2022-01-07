@@ -32,7 +32,9 @@ interface Props {
 }
 
 interface Account {
-  add: string;
+  address: string;
+  ether: string;
+  date: Date;
 }
 
 interface DialogTitleProps {
@@ -50,25 +52,23 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const BootstrapDialogTitle = (props: DialogTitleProps) => {
-  const { children, onClose, ...other } = props;
+  const { children, onClose } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle>
       {children}
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex" alignItems="center" alignContent="center">
+          <Typography variant="body1">Last addresses used</Typography>
+        </Box>
+        <Box>
+          {onClose ? (
+            <IconButton size="small" onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          ) : null}
+        </Box>
+      </Box>
     </DialogTitle>
   );
 };
@@ -94,6 +94,9 @@ const useStyles = makeStyles(() => ({
   grid: {
     minHeight: "90vh",
   },
+  buttonGrid: {
+    marginBottom: 20,
+  },
   openButton: {
     alignItems: "right",
   },
@@ -109,9 +112,9 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
   const [info, setInfo] = useState([]);
   const [userBalance, setUserBalance] = useState("");
   const [amount, setAmount] = useState();
+  const [addresses, setAddresses] = useState<Account[]>([]);
 
-  const [addresses, setAddresses] = useState<string | null>(null);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const startTransaction = async ({
     setPending,
@@ -131,11 +134,19 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
 
       ethers.utils.getAddress(addr);
 
-      localStorage.setItem("addresses", JSON.stringify(addr));
       const infoE = await signer.sendTransaction({
         to: addr,
         value: ethers.utils.parseEther(ether),
       });
+
+      var dateTime = new Date();
+
+      let arr = JSON.parse(localStorage.getItem("storage") || "[]");
+      if (!(arr instanceof Array)) arr = [arr];
+
+      arr.push({ address: addr, ether: ether, date: dateTime });
+
+      localStorage.setItem("storage", JSON.stringify(arr));
 
       setAmount(ether);
 
@@ -147,8 +158,8 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
 
   useEffect(() => {
     getAccountBalance(accounts.toString());
-    setAddresses(localStorage.getItem("addresses") || "{}");
-  });
+    setAddresses(JSON.parse(localStorage.getItem("storage") || "[]"));
+  }, [userBalance]);
 
   const getAccountBalance = useCallback((account: any) => {
     window.ethereum
@@ -181,6 +192,11 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
     setPaste(text);
   }, []);
 
+  const copyAndPaste = useCallback((addr) => {
+    setPaste(addr);
+    handleClose();
+  }, []);
+
   const getMax = useCallback(() => {
     setMax(userBalance);
   }, [userBalance]);
@@ -189,7 +205,7 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
     e.preventDefault();
     const data = new FormData(e.target);
     console.log(e.target);
-    setAddresses(JSON.parse(localStorage.getItem("addresse") || "{}"));
+
     await startTransaction({
       setPending,
       setError,
@@ -205,6 +221,9 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
   const handleClose = useCallback(() => {
     setOpen(false);
   }, [open]);
+
+  console.log(addresses[1]);
+  console.log(addresses.length);
 
   return (
     <Box>
@@ -298,13 +317,65 @@ const Wallet: React.FC<Props> = ({ accounts }) => {
                               <BootstrapDialogTitle
                                 id="customized-dialog-title"
                                 onClose={handleClose}
-                              >
-                                Last Address used
-                              </BootstrapDialogTitle>
+                              />
+
                               <DialogContent dividers>
-                                <Typography gutterBottom>
-                                  {addresses}
-                                </Typography>
+                                {addresses.length > 0 ? (
+                                  addresses.map((addr, index) => (
+                                    <Grid
+                                      key={index}
+                                      className={classes.buttonGrid}
+                                      container
+                                      spacing={4}
+                                    >
+                                      <Grid item>
+                                        <Typography variant="h5">
+                                          Transaction number {index + 1}:
+                                        </Typography>
+                                        <Typography variant="body1">
+                                          Address:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {addr.address}
+                                        </Typography>
+                                        <Button
+                                          onClick={() =>
+                                            copyAndPaste(addr.address)
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                        >
+                                          Copy Address
+                                        </Button>
+                                        <Typography variant="body1">
+                                          Ether amount:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {addr.ether}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                          Datetime:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {addr.date}
+                                        </Typography>
+                                      </Grid>
+                                    </Grid>
+                                  ))
+                                ) : (
+                                  <Typography gutterBottom>
+                                    No addresses
+                                  </Typography>
+                                )}
+                                {/* {addresses ? (
+                                  addresses.map((addr) => {
+                                    <Typography>{addr}</Typography>;
+                                  })
+                                ) : (
+                                  <Typography gutterBottom>
+                                    SEM ENDEREÇOS
+                                  </Typography>
+                                )} */}
                               </DialogContent>
                               <DialogActions>
                                 <Button autoFocus onClick={handleClose}>
